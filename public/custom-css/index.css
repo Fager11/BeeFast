@@ -1,0 +1,17 @@
+.card-link-border {
+    border: 1px solid transparent;
+    transition: filter 0.3s, border-color 0.3s;
+}
+
+.card-link-border:hover {
+    border-color: darkorange;
+}
+
+.card-link-border:hover img {
+    filter: blur(2px);
+}
+
+.card-link:hover img,
+.card-link:hover svg {
+    filter: blur(2px);
+}

@@ -1,0 +1,28 @@
+$primary: darkorange;
+
+// ✅ Make success a soft greenish-orange (still warm, harmonious)
+$success: mix($primary, #28a745, 15%); // 85% Bootstrap green + 15% orange
+
+// ✅ Make info a slightly cooler, teal-tinged orange (feels blue-ish, but warm)
+$info: mix($primary, #17a2b8, 30%); // 70% Bootstrap blue + 30% orange
+
+// ✅ Make warning a bright gold-orange (more vivid but related)
+$warning: lighten($primary, 10%);
+
+// ✅ Make danger a reddish-orange (aggressive but on theme)
+$danger: mix($primary, red, 30%);
+
+$secondary: desaturate(lighten($primary, 30%), 10%);
+$light: #fdf8f3;
+$dark: #3c2e24;
+
+
+$link-color: $primary;
+$link-hover-color: darken($primary, 10%);
+$btn-primary-bg: $primary;
+
+$font-family-sans-serif: 'Nunito', sans-serif;
+$font-size-base: 0.9rem;
+$line-height-base: 1.6;
+
+$body-bg: #fcfcfd;
