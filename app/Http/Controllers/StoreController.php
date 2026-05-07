@@ -128,6 +128,12 @@ class StoreController extends Controller
      */
     public function update(Request $request, Store $store)
     {
+        $image = $store->image;
+    if ($request->hasFile('image')) {
+        Storage::disk('public')->delete($store->image);
+        $image = $request->file('image')->store('stores', 'public');
+        
+    }
         $request->validate([
             'name' => ['required','string','max:255'],
             'image' => ['nullable','image'], // ,'max:2048'

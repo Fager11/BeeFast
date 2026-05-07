@@ -3,12 +3,12 @@
 @section('content')
 <div class="container mt-4">
 
-    {{-- شعار --}}
+    
     <div class="text-center mb-4">
         <img src="{{ asset('img/logo.jpg') }}" alt="logo" class="img-fluid" style="max-width:200px;">
     </div>
 
-    {{-- رسائل النجاح والخطأ --}}
+    
     @if(session('success'))
         <div class="alert alert-success d-flex align-items-center" role="alert">
             <i class="bi bi-check-circle-fill me-2" style="font-size:1.2rem;"></i>
@@ -23,7 +23,7 @@
         </div>
     @endif
 
-    {{-- رسالة عدم وجود نتائج بحث --}}
+    
     @if(isset($noResults) && $noResults)
         <div class="alert alert-warning d-flex align-items-center mt-3" role="alert">
             <i class="bi bi-exclamation-triangle-fill me-2" style="font-size:1.2rem;"></i>
@@ -31,7 +31,7 @@
         </div>
     @endif
 
-    {{-- أقسام المطاعم، المتاجر، المقاهي --}}
+    
     <div class="row mb-4">
         <h3 class="mb-3">ماذا تريد أن تطلب؟</h3>
         @php
@@ -58,7 +58,7 @@
         @endforeach
     </div>
 
-    {{-- أقسام حسب النوع: المتاجر، المطاعم، المقاهي --}}
+    
     @foreach(['stores'=>'المتاجر الاكثر رواجا', 'restaurants'=>'المطاعم الاكثر رواجا', 'cafes'=>'المقاهي الاكثر رواجا'] as $var=>$title)
         <div class="row mb-4">
             <h3 class="mb-3">{{ $title }}</h3>
@@ -66,7 +66,7 @@
                 <div class="col-md-3 mb-3">
                     <a href="{{ route('stores.show', ['store'=>$item->id]) }}" class="text-decoration-none">
                         <div class="card shadow-sm h-100 card-hover">
-                            <img src="{{ asset('storage/'.$item->image) }}" class=" mt-2 mx-auto d-block" alt="صورة {{ $item->name }}" style="height:145px; object-fit:cover;">
+                           <img src="{{ asset('storage/'.$item->image) }}" class="card-img-top" alt="صورة {{ $item->name }}" style="height:200px; object-fit:cover;">
                             <div class="card-body text-center">
                                 <h5 class="card-title">{{ $item->name }}</h5>
                                 <p class="text-muted mb-2">قيمة التوصيل: {{ $item->delivery_price }} ل.س</p>

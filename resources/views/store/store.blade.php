@@ -17,7 +17,7 @@
         </div>
     @endif
 
-    {{-- بطاقة معلومات المتجر --}}
+    
     <div class="card mb-4 border-0 shadow">
         <div class="card-body d-flex align-items-center gap-4 flex-wrap">
             @if($store->image)
@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    {{-- المنتجات --}}
+    
     <h4 class="fw-bold mb-3" style="color: var(--clr-deep);">
         <i class="fa fa-box ms-2"></i> المنتجات
     </h4>

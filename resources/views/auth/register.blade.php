@@ -14,7 +14,7 @@
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
 
-                    {{-- الاسم --}}
+                    
                     <div class="mb-3">
                         <label for="name" class="form-label">الاسم</label>
                         <input id="name" type="text"
@@ -25,7 +25,7 @@
                         @enderror
                     </div>
 
-                    {{-- البريد --}}
+                    
                     <div class="mb-3">
                         <label for="email" class="form-label">البريد الإلكتروني</label>
                         <input id="email" type="email"
@@ -36,7 +36,7 @@
                         @enderror
                     </div>
 
-                    {{-- العنوان --}}
+                    
                     <div class="mb-3">
                         <label for="address" class="form-label">العنوان</label>
                         <input id="address" type="text"
@@ -47,7 +47,7 @@
                         @enderror
                     </div>
 
-                    {{-- المدينة + الهاتف --}}
+                    
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="city" class="form-label">المدينة</label>
@@ -69,7 +69,7 @@
                         </div>
                     </div>
 
-                    {{-- كلمة المرور --}}
+                    
                     <div class="mb-3">
                         <label for="password" class="form-label">كلمة المرور</label>
                         <input id="password" type="password"
@@ -80,14 +80,14 @@
                         @enderror
                     </div>
 
-                    {{-- تأكيد كلمة المرور --}}
+                    
                     <div class="mb-3">
                         <label for="password-confirm" class="form-label">تأكيد كلمة المرور</label>
                         <input id="password-confirm" type="password" class="form-control"
                             name="password_confirmation" required autocomplete="new-password">
                     </div>
 
-                    {{-- نوع المستخدم --}}
+                    
                     <div class="mb-4">
                         <label for="role" class="form-label">نوع المستخدم</label>
                         <select id="role" name="role"

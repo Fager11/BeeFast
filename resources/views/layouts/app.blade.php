@@ -33,29 +33,25 @@
     <link rel="shortcut icon" href="{{ asset('img/logo.png') }}">
 
     <style>
-        /* ===========================
-           متغيرات الألوان الرئيسية
-           =========================== */
+       
         :root {
             --clr-primary: #f97316;
-            /* برتقالي رئيسي */
+            
             --clr-deep: #c2410c;
-            /* برتقالي غامق */
+           
             --clr-light: #ffedd5;
-            /* برتقالي فاتح */
+           
             --clr-accent: #ef4444;
-            /* أحمر دافئ */
+           
             --clr-warm-white: #fff8f0;
-            /* أبيض دافئ */
+           
             --clr-text: #431407;
-            /* بني داكن للنصوص */
+           
             --clr-muted: #9a3412;
-            /* بني متوسط */
+            
         }
 
-        /* ===========================
-           صورة الخلفية
-           =========================== */
+        
         body {
             background-image: url('{{ asset('img/background.png') }}');
             background-size: 50%;
@@ -65,9 +61,7 @@
             min-height: 100vh;
         }
 
-        /* ===========================
-           طبقة لون دافئة فوق الصورة
-           =========================== */
+       
         body::before {
             content: '';
             position: fixed;
@@ -87,9 +81,7 @@
             z-index: 1;
         }
 
-        /* ===========================
-           شريط التنقل (Navbar)
-           =========================== */
+        
         .navbar {
             background: rgba(255, 248, 240, 0.90) !important;
             backdrop-filter: blur(14px);
@@ -98,10 +90,7 @@
             box-shadow: 0 2px 20px rgba(194, 65, 12, 0.12) !important;
         }
 
-        /* ===========================
-           أزرار الـ Navbar
-           =========================== */
-        /* زر برتقالي شفاف (المتاجر / الرئيسية) */
+        
         .btn-orange {
             background-color: rgba(249, 115, 22, 0.15);
             border: 1px solid rgba(249, 115, 22, 0.35);
@@ -120,7 +109,7 @@
             box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
         }
 
-        /* زر برتقالي مملوء (تسجيل الدخول / إنشاء حساب / لوحة التحكم) */
+       
         .custom-btn-orange {
             background: linear-gradient(135deg, var(--clr-primary), var(--clr-accent));
             color: #fff !important;
@@ -139,9 +128,7 @@
             color: #fff !important;
         }
 
-        /* ===========================
-           حقل البحث
-           =========================== */
+       
         .search-input {
             border-radius: 10px;
             padding: 8px 14px;
@@ -177,9 +164,7 @@
             transform: scale(1.2);
         }
 
-        /* ===========================
-           أزرار الأيقونات (سلة، مفضلة، إشعارات)
-           =========================== */
+        
         .btn-light.position-relative {
             background: rgba(255, 255, 255, 0.6) !important;
             border: 1px solid rgba(249, 115, 22, 0.2) !important;
@@ -195,9 +180,7 @@
             box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
         }
 
-        /* ===========================
-           اسم المستخدم في القائمة
-           =========================== */
+        
         .nav-link.dropdown-toggle {
             color: var(--clr-deep) !important;
             font-weight: 700;
@@ -207,9 +190,7 @@
             color: var(--clr-primary) !important;
         }
 
-        /* ===========================
-           القائمة المنسدلة (Dropdown)
-           =========================== */
+        
         .dropdown-menu {
             background: var(--clr-warm-white) !important;
             border: 1px solid rgba(249, 115, 22, 0.2) !important;
@@ -231,9 +212,7 @@
             color: var(--clr-primary) !important;
         }
 
-        /* ===========================
-           البطاقات (Cards)
-           =========================== */
+       
         .card {
             background: rgba(255, 248, 240, 0.80) !important;
             backdrop-filter: blur(12px);
@@ -249,9 +228,7 @@
             color: var(--clr-deep) !important;
         }
 
-        /* ===========================
-           حقول الإدخال
-           =========================== */
+        
         .form-control,
         .form-select {
             background: rgba(255, 255, 255, 0.75) !important;
@@ -268,9 +245,7 @@
             background: #fff !important;
         }
 
-        /* ===========================
-           الأزرار الرئيسية
-           =========================== */
+        
         .btn-primary {
             background: linear-gradient(135deg, var(--clr-primary), var(--clr-accent)) !important;
             border: none !important;
@@ -285,9 +260,7 @@
             box-shadow: 0 6px 20px rgba(249, 115, 22, 0.40) !important;
         }
 
-        /* ===========================
-           شريط التمرير
-           =========================== */
+        
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -308,7 +281,7 @@
         <nav class="navbar navbar-expand-md shadow-sm">
             <div class="container">
 
-                {{-- شعار الموقع --}}
+                
                 <a class="navbar-brand ms-auto" href="{{ url('/') }}">
                     <img src="{{ asset('img/logo.jpg') }}" style="width: 3rem;" />
                 </a>
@@ -321,7 +294,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-                    {{-- يسار الـ navbar: لوحة التحكم + المتاجر --}}
+                    
                     <ul class="navbar-nav ms-auto">
                         @auth
                             @php $role = auth()->user()->role; @endphp
@@ -344,7 +317,7 @@
                         </li>
                     </ul>
 
-                    {{-- البحث --}}
+                    
                     <div class="d-flex mx-2">
                         <form class="d-flex align-items-center" role="search"
                             action="{{ route('stores.index', ['user_mode' => 1]) }}" method="GET">
@@ -356,7 +329,7 @@
                         </form>
                     </div>
 
-                    {{-- يمين الـ navbar: أيقونات + مستخدم --}}
+                    
                     <ul class="navbar-nav me-auto align-items-center">
 
                         @guest
@@ -375,7 +348,7 @@
                                 </li>
                             @endif
                         @else
-                            {{-- أيقونة السلة --}}
+                            
                             <li class="nav-item d-flex">
                                 <a href="{{ route('cart.index') }}" class="btn btn-light position-relative m-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26"
@@ -392,7 +365,7 @@
                                 </a>
                             </li>
 
-                            {{-- أيقونة الطلبات (للزبون فقط) --}}
+                            
                             @php $user = auth()->user(); @endphp
                             @if ($user && $user->role === 'user')
                                 <li class="nav-item d-flex">
@@ -411,7 +384,7 @@
                                 </li>
                             @endif
 
-                            {{-- أيقونة المفضلة --}}
+                           
                             <li class="nav-item d-flex">
                                 <a href="{{ route('favorites.index') }}" class="btn btn-light position-relative m-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26"
@@ -428,7 +401,7 @@
                                 </a>
                             </li>
 
-                            {{-- أيقونة الإشعارات --}}
+                            
                             <li class="nav-item dropdown d-flex">
                                 <a class="btn btn-light position-relative m-1" href="{{ route('notifications.index') }}"
                                     id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -490,7 +463,7 @@
                                 </ul>
                             </li>
 
-                            {{-- اسم المستخدم --}}
+                            
                             <li class="nav-item dropdown d-flex me-2">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle align-self-center" href="#"
                                     role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"

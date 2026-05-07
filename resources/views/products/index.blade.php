@@ -6,7 +6,7 @@
         <i class="bi bi-box-seam"></i> إدارة المنتجات
     </h2>
 
-    {{-- رسائل النجاح --}}
+    
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
             <i class="bi bi-check-circle-fill me-2" style="font-size:1.2rem;"></i>
@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    {{-- رسائل الخطأ --}}
+    
     @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
             <i class="bi bi-x-circle-fill me-2" style="font-size:1.2rem;"></i>
@@ -42,7 +42,7 @@
             @foreach($products as $product)
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm border-0 product-card">
-                    {{-- صورة المنتج --}}
+                    
                     @if($product->image)
                         <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top product-img" alt="{{ $product->name }}">
                     @else

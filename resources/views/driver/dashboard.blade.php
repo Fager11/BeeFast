@@ -20,7 +20,7 @@
         </div>
     @endif
 
-    {{-- الإشعارات --}}
+   
     <div class="card border-0 shadow mb-4">
         <div class="card-header">
             <i class="fa fa-bell ms-2"></i> الإشعارات
@@ -57,7 +57,7 @@
         </div>
     </div>
 
-    {{-- الطلبات --}}
+    
     <div class="d-flex flex-column gap-4">
         @forelse($orders as $order)
             @php

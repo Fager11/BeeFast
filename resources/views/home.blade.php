@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="container py-4">
-        {{-- رسائل النجاح --}}
+        
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
                 <i class="bi bi-check-circle-fill ms-2" style="font-size:1.2rem;"></i>
@@ -15,7 +15,7 @@
             </div>
         @endif
 
-        {{-- رسائل الخطأ --}}
+        
         @if (session('error'))
             <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
                 <i class="bi bi-x-circle-fill ms-2" style="font-size:1.2rem;"></i>
@@ -24,14 +24,14 @@
             </div>
         @endif
 
-        {{-- الشعار والعنوان --}}
+        
         <div class="text-center mb-5">
             <img src="{{ asset('img/logo-en.png') }}" alt="logo" width="160px" height="160px" class="mb-3"
                 style="filter: drop-shadow(0 4px 12px rgba(249,115,22,0.3));">
             <h2 class="fw-bold" style="color: var(--clr-deep, #2c3e50);">تابع طلبك لحظة بلحظة</h2>
         </div>
 
-        {{-- بطاقة تتبع الطلب --}}
+        
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card border-0 shadow">
@@ -50,7 +50,7 @@
                     </div>
 
                     <div class="card-body py-4">
-                        {{-- شريط التقدم --}}
+                        
                         <div class="order-tracker">
                             <div class="tracker-line">
                                 @php
@@ -70,7 +70,7 @@
                             </div>
 
                             <div class="tracker-steps">
-                                {{-- الخطوة 1: قيد الانتظار --}}
+                                
                                 <div
                                     class="tracker-step {{ in_array($orders->first()?->status, ['pending', 'in_progress', 'on_the_way', 'delivered']) ? 'active' : '' }}">
                                     <div class="step-circle">
@@ -79,7 +79,7 @@
                                     <p class="step-label">الطلب<br>قيد الانتظار</p>
                                 </div>
 
-                                {{-- الخطوة 2: قيد العمل --}}
+                                
                                 <div
                                     class="tracker-step {{ in_array($orders->first()?->status, ['in_progress', 'on_the_way', 'delivered']) ? 'active' : '' }}">
                                     <div class="step-circle">
@@ -88,7 +88,7 @@
                                     <p class="step-label">الطلب<br>قيد العمل</p>
                                 </div>
 
-                                {{-- الخطوة 3: في الطريق --}}
+                                
                                 <div
                                     class="tracker-step {{ in_array($orders->first()?->status, ['on_the_way', 'delivered']) ? 'active' : '' }}">
                                     <div class="step-circle">
@@ -97,7 +97,7 @@
                                     <p class="step-label">الطلب<br>في الطريق</p>
                                 </div>
 
-                                {{-- الخطوة 4: تم التوصيل --}}
+                                
                                 <div
                                     class="tracker-step {{ in_array($orders->first()?->status, ['delivered']) ? 'active' : '' }}">
                                     <div class="step-circle">
@@ -108,7 +108,7 @@
                             </div>
                         </div>
 
-                        {{-- الخريطة - added under the progress bar --}}
+                        
                         @php $currentOrder = $orders->first(); @endphp
                         @if ($currentOrder && $currentOrder->latitude && $currentOrder->longitude)
                             <div class="mt-4">
@@ -130,7 +130,7 @@
             </div>
         </div>
 
-        {{-- طلباتي section --}}
+        
         <div class="container py-4 mt-4">
             <h1 class="mb-4 text-center">طلباتي</h1>
 
@@ -284,13 +284,13 @@
 @endsection
 @push('styles')
     <style>
-        /* ── شريط التتبع ── */
+       
         .order-tracker {
             position: relative;
             padding: 0 10px;
         }
 
-        /* الخط الأفقي الخلفي */
+       
         .tracker-line {
             position: absolute;
             top: 30px;
@@ -302,7 +302,7 @@
             z-index: 0;
         }
 
-        /* الخط الملوّن (يمثل التقدم) */
+       
         .tracker-line-fill {
             width: 0%;
             height: 100%;
@@ -311,7 +311,7 @@
             transition: width .6s ease;
         }
 
-        /* الخطوات */
+        
         .tracker-steps {
             display: flex;
             justify-content: space-between;
@@ -326,7 +326,7 @@
             flex: 1;
         }
 
-        /* الدائرة */
+        
         .step-circle {
             width: 62px;
             height: 62px;
@@ -349,7 +349,7 @@
             transition: all .3s ease;
         }
 
-        /* الخطوة النشطة */
+        
         .tracker-step.active .step-circle {
             background: #FEEBD9;
             border-color: #f97316;
@@ -361,7 +361,7 @@
             filter: none;
         }
 
-        /* النص */
+       
         .step-label {
             font-size: 0.82rem;
             font-weight: 600;
@@ -375,7 +375,7 @@
             color: #2c3e50;
         }
 
-        /* استجابة الشاشات الصغيرة */
+        
         @media (max-width: 576px) {
             .step-circle {
                 width: 48px;
