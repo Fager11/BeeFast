@@ -75,7 +75,36 @@
                     </tbody>
                 </table>
             </div>
+{{-- كود الخصم (نموذج مستقل خارج نموذج الدفع) --}}
+<div class="card shadow-lg border-0 mb-4">
+    <div class="card-body">
+        <h5 class="card-title text-center mb-3">🎟️ كود الخصم</h5>
 
+        @if ($coupon)
+            <div class="alert alert-success d-flex justify-content-between align-items-center mb-0">
+                <span>
+                    <i class="bi bi-check-circle-fill ms-2"></i>
+                    الكود <strong>{{ $coupon->code }}</strong> مطبّق
+                    ({{ $coupon->type === 'percent' ? (float) $coupon->value . '%' : number_format($coupon->value, 0) . ' ل.س' }})
+                </span>
+                <form action="{{ route('cart.coupon.remove') }}" method="POST" class="mb-0">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-outline-danger">إلغاء الكود</button>
+                </form>
+            </div>
+        @else
+            <form action="{{ route('cart.coupon.apply') }}" method="POST"
+                  class="d-flex gap-2 justify-content-center">
+                @csrf
+                <input type="text" name="code" class="form-control"
+                       style="max-width:260px; text-transform:uppercase;"
+                       placeholder="أدخل كود الخصم" required>
+                <button type="submit" class="btn btn-primary">تطبيق</button>
+            </form>
+        @endif
+    </div>
+</div>
             <form action="{{ route('cart.checkout') }}" method="POST" id="checkoutForm">
                 @csrf
 
@@ -121,9 +150,13 @@
                                         ل.س</strong></p>
                             </div>
                             <div class="col-md-4">
-                                <p>الخصم:<br><strong class="text-danger">- {{ number_format($discount, 2) }} ل.س</strong>
-                                </p>
-                            </div>
+    <p>خصم الولاء:<br><strong class="text-danger">- {{ number_format($discount, 2) }} ل.س</strong></p>
+    @if ($coupon)
+        <p class="mb-0">خصم الكوبون ({{ $coupon->code }}):<br>
+            <strong class="text-danger">- {{ number_format($couponDiscount, 2) }} ل.س</strong>
+        </p>
+    @endif
+</div>
                         </div>
 
                         @if ($stores->count() > 0)

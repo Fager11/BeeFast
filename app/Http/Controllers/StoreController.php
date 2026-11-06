@@ -97,18 +97,36 @@ class StoreController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Store $store)
+   public function show(Store $store)
 {
-
     $products = $store->products()->orderBy('created_at', 'desc')->get();
-
     $noProducts = $products->isEmpty();
 
-    return view('store.store', [
-        'store' => $store,
-        'products' => $products,
-        'noProducts' => $noProducts
-    ]);
+    // جلب التقييمات
+    $reviews = $store->reviews()->with('user')->latest()->get();
+    $averageRating = $reviews->avg('rating');
+    $reviewCount   = $reviews->count();
+
+    // هل المستخدم الحالي قيّم المتجر؟
+    $userReview = null;
+    $canReview  = false;
+
+    if (auth()->check() && auth()->user()->role === 'user') {
+        $userReview = $reviews->where('user_id', auth()->id())->first();
+
+        // هل لديه طلب مكتمل من هذا المتجر؟
+        $canReview = \App\Models\Order::where('user_id', auth()->id())
+            ->where('status', 'delivered')
+            ->whereHas('items.product', function($q) use ($store) {
+                $q->where('store_id', $store->id);
+            })->exists();
+    }
+
+    return view('store.store', compact(
+        'store', 'products', 'noProducts',
+        'reviews', 'averageRating', 'reviewCount',
+        'userReview', 'canReview'
+    ));
 }
 
 

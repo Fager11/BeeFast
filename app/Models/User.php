@@ -54,6 +54,9 @@ public function favorites()
 {
     return $this->belongsToMany(Product::class, 'favorites')->withTimestamps();
 }
-
+public function reviews()
+{
+    return $this->hasMany(Review::class);
+}
 
 }

@@ -99,7 +99,7 @@
 </style>
 
 <div class="container py-4" dir="rtl">
-{{-- رسائل النجاح --}}
+
     @if(session('success'))
         <div class="alert alert-success d-flex align-items-center" role="alert">
             <i class="bi bi-check-circle-fill me-2" style="font-size:1.2rem;"></i>
@@ -107,7 +107,7 @@
         </div>
     @endif
 
-    {{-- رسائل الخطأ --}}
+    
     @if(session('error'))
         <div class="alert alert-danger d-flex align-items-center" role="alert">
             <i class="bi bi-x-circle-fill me-2" style="font-size:1.2rem;"></i>

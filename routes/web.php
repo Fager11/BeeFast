@@ -11,16 +11,9 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\FavoriteController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Store;
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\CouponController;
+
 
 Route::get('/', function () {
     $stores = Store::where('popular', 1)
@@ -58,19 +51,19 @@ Route::post('/profile', [ProfileController::class, 'update'])->name('update_prof
 Route::get('/users', [UserController::class, 'indexuser']);
 Route::get('/users/{user}/delete',[UserController::class,'destroy']);
 
-//stores products
+
 Route::resource('stores', StoreController::class);
 Route::get('/stores-products', [ProductController::class, 'allStoresProducts'])->name('products.allStores');
 Route::resource('products', ProductController::class);
 
-//cart
+
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update/{item}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/remove/{item}', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 
-//notification
+
 Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
 Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markRead'])->name('notifications.markRead');
@@ -78,7 +71,7 @@ Route::delete('/notifications/clear', [App\Http\Controllers\NotificationControll
     ->name('notifications.clear')
     ->middleware('auth');
 
-//order
+
 Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 Route::post('/orders/{id}/cannot-cancel', [OrderController::class, 'cannotCancel'])->name('orders.cannotCancel');
@@ -88,3 +81,15 @@ Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.myO
 
 Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
 Route::post('/favorite/toggle/{id}', [FavoriteController::class, 'toggle'])->name('favorite.toggle');
+// Reviews
+Route::post('/stores/{store}/review', [ReviewController::class, 'store'])->name('reviews.store');
+Route::delete('/stores/{store}/review', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+// Coupons (Admin)
+Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index');
+Route::post('/coupons', [CouponController::class, 'store'])->name('coupons.store');
+Route::post('/coupons/{coupon}/toggle', [CouponController::class, 'toggle'])->name('coupons.toggle');
+Route::delete('/coupons/{coupon}', [CouponController::class, 'destroy'])->name('coupons.destroy');
+
+// Coupons (User - Cart)
+Route::post('/cart/coupon/apply', [CartController::class, 'applyCoupon'])->name('cart.coupon.apply')->middleware('auth');
+Route::delete('/cart/coupon/remove', [CartController::class, 'removeCoupon'])->name('cart.coupon.remove')->middleware('auth');

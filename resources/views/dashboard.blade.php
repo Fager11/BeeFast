@@ -100,7 +100,18 @@
                                 </div>
                             </div>
                         </div>
-
+                        <div class="col-md-6 col-lg-3">
+    <div class="card text-center border-0 shadow-sm h-100">
+        <div class="card-body d-flex flex-column">
+            <i class="fas fa-ticket-alt fa-3x text-warning mb-3"></i>
+            <h5 class="card-title">أكواد الخصم</h5>
+            <p class="card-text text-muted flex-grow-1">إنشاء أكواد الخصم وتفعيلها وتعطيلها وحذفها.</p>
+            <a href="{{ route('coupons.index') }}" class="btn btn-outline-warning w-100 mt-auto">
+                <i class="fas fa-ticket-alt"></i> إدارة
+            </a>
+        </div>
+    </div>
+</div>            
                     </div>
 
                 </div>

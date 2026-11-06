@@ -27,4 +27,8 @@ public function products()
 {
     return $this->hasMany(Product::class);
 }
+public function reviews()
+{
+    return $this->hasMany(Review::class);
+}
 }

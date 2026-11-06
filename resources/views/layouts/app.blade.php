@@ -33,6 +33,13 @@
     <link rel="shortcut icon" href="{{ asset('img/logo.png') }}">
 
     <style>
+    /* إخفاء شريط Google الافتراضي */
+    .goog-te-banner-frame { display: none !important; }
+    body { top: 0 !important; }
+    .goog-te-gadget { font-size: 0 !important; }
+    .goog-te-gadget img { display: none !important; }
+</style>
+    <style>
        
         :root {
             --clr-primary: #f97316;
@@ -318,6 +325,21 @@
                     </ul>
 
                     
+<!-- زر تبديل اللغة -->
+<div class="d-flex align-items-center me-auto gap-1">
+    <div id="google_translate_element" style="display:none;"></div>
+    <button onclick="translateToEnglish()"
+            class="btn btn-orange py-0 px-2"
+            style="font-size:11px; border-radius:6px;">
+        🌐 EN
+    </button>
+    <button onclick="translateToArabic()"
+            class="btn btn-orange py-0 px-2"
+            style="font-size:11px; border-radius:6px;">
+        🌐 AR
+    </button>
+</div>
+
                     <div class="d-flex mx-2">
                         <form class="d-flex align-items-center" role="search"
                             action="{{ route('stores.index', ['user_mode' => 1]) }}" method="GET">
@@ -501,6 +523,33 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     @yield('scripts')
+
+    <!-- Google Translate -->
+<script>
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+        { pageLanguage: 'ar', includedLanguages: 'en,ar' },
+        'google_translate_element'
+    );
+}
+
+function translateToEnglish() {
+    var select = document.querySelector('.goog-te-combo');
+    if (select) {
+        select.value = 'en';
+        select.dispatchEvent(new Event('change'));
+    }
+}
+
+function translateToArabic() {
+    var select = document.querySelector('.goog-te-combo');
+    if (select) {
+        select.value = 'ar';
+        select.dispatchEvent(new Event('change'));
+    }
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 
 </html>

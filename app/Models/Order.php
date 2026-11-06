@@ -10,10 +10,11 @@ class Order extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id', 'driver_id',
-        'subtotal', 'discount', 'delivery_price', 'total',
-        'status', 'estimated_delivery_time','address', 'latitude', 'longitude'
-    ];
+    'user_id', 'driver_id',
+    'subtotal', 'discount', 'coupon_code', 'coupon_discount',
+    'delivery_price', 'total',
+    'status', 'estimated_delivery_time', 'address', 'latitude', 'longitude'
+];
 public function user() { return $this->belongsTo(User::class); }
 public function store() { return $this->belongsTo(Store::class); }
 public function driver() { return $this->belongsTo(User::class, 'driver_id'); }

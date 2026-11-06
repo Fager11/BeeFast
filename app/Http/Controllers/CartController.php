@@ -12,43 +12,106 @@ use App\Models\UserOrderCount;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Notifications\NewOrderNotification;
+use App\Models\Coupon;
 
 class CartController extends Controller
 {
 
-    public function index()
-    {
-        $cart = Cart::firstOrCreate(
-            ['user_id' => Auth::id()]
-        );
+   public function index()
+{
+    $cart = Cart::firstOrCreate(
+        ['user_id' => Auth::id()]
+    );
 
-        $items = $cart->items()->with('product.store')->get();
+    $items = $cart->items()->with('product.store')->get();
 
-        // Calculate subtotal using product price
-        $subtotal = $items->sum(function($item) {
-            return $item->product->price * $item->quantity;
-        });
+    $subtotal = $items->sum(function($item) {
+        return $item->product->price * $item->quantity;
+    });
 
-        // Get unique stores from cart items
-        $stores = $items->pluck('product.store')->unique('id')->filter();
+    $stores = $items->pluck('product.store')->unique('id')->filter();
 
-        // Calculate delivery fee as sum of unique store delivery prices
-        $delivery_fee = $stores->sum(function($store) {
-            return $store->delivery_price;
-        });
+    $delivery_fee = $stores->sum(function($store) {
+        return $store->delivery_price;
+    });
 
-        // Calculate discount based on order count
-        $userOrderCount = UserOrderCount::firstOrCreate(
-            ['user_id' => Auth::id()]
-        );
+    // خصم الولاء
+    $userOrderCount = UserOrderCount::firstOrCreate(
+        ['user_id' => Auth::id()]
+    );
 
-        $discount = 0.05 * $userOrderCount->order_count * $subtotal;
-        $discount = min($discount, $subtotal * 0.2);
+    $discount = 0.05 * $userOrderCount->order_count * $subtotal;
+    $discount = min($discount, $subtotal * 0.2);
 
-        $total = $subtotal + $delivery_fee - $discount;
+    // خصم الكوبون
+    [$coupon, $couponDiscount] = $this->resolveCoupon($subtotal, $discount);
 
-        return view('cart.index', compact('items', 'subtotal', 'delivery_fee', 'discount', 'total', 'stores'));
+    $total = $subtotal + $delivery_fee - $discount - $couponDiscount;
+
+    return view('cart.index', compact(
+        'items', 'subtotal', 'delivery_fee', 'discount',
+        'total', 'stores', 'coupon', 'couponDiscount'
+    ));
+}
+/**
+ * يتحقق من الكوبون المخزّن في الجلسة ويحسب قيمة خصمه
+ */
+private function resolveCoupon($subtotal, $loyaltyDiscount)
+{
+    $code = session('coupon_code');
+
+    if (!$code) {
+        return [null, 0];
     }
+
+    $coupon = Coupon::where('code', $code)->first();
+
+    if (!$coupon || $coupon->checkValid($subtotal) !== true) {
+        session()->forget('coupon_code');
+        return [null, 0];
+    }
+
+    return [$coupon, $coupon->calculateDiscount($subtotal - $loyaltyDiscount)];
+}
+
+public function applyCoupon(Request $request)
+{
+    $request->validate(['code' => 'required|string|max:50']);
+
+    $cart  = Cart::firstOrCreate(['user_id' => Auth::id()]);
+    $items = $cart->items()->with('product')->get();
+
+    if ($items->isEmpty()) {
+        return back()->with('error', 'السلة فارغة.');
+    }
+
+    $subtotal = $items->sum(function($item) {
+        return $item->product->price * $item->quantity;
+    });
+
+    $coupon = Coupon::where('code', strtoupper(trim($request->code)))->first();
+
+    if (!$coupon) {
+        return back()->with('error', 'كود الخصم غير صحيح.');
+    }
+
+    $check = $coupon->checkValid($subtotal);
+
+    if ($check !== true) {
+        return back()->with('error', $check);
+    }
+
+    session(['coupon_code' => $coupon->code]);
+
+    return back()->with('success', 'تم تطبيق كود الخصم ' . $coupon->code . ' 🎟️');
+}
+
+public function removeCoupon()
+{
+    session()->forget('coupon_code');
+
+    return back()->with('success', 'تم إلغاء كود الخصم.');
+}
 
     public function add(Request $request, $productId)
     {
@@ -148,76 +211,92 @@ class CartController extends Controller
     }
 
     public function checkout(Request $request)
-    {
-        $request->validate([
-            'address' => 'required|string|max:255',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-        ], [
-            'address.required' => 'يجب إدخال عنوان التوصيل أولاً.',
-            'latitude.required' => 'يجب تحديد موقعك على الخريطة.',
-            'longitude.required' => 'يجب تحديد موقعك على الخريطة.',
+{
+    $request->validate([
+        'address' => 'required|string|max:255',
+        'latitude' => 'required|numeric',
+        'longitude' => 'required|numeric',
+    ], [
+        'address.required' => 'يجب إدخال عنوان التوصيل أولاً.',
+        'latitude.required' => 'يجب تحديد موقعك على الخريطة.',
+        'longitude.required' => 'يجب تحديد موقعك على الخريطة.',
+    ]);
+
+    $cart = Cart::where('user_id', Auth::id())->firstOrFail();
+    $items = $cart->items()->with('product.store')->get();
+
+    if ($items->isEmpty()) {
+        return redirect()->back()->with('error', 'السلة فارغة.');
+    }
+
+    // ===== الحسابات (قبل المعاملة) =====
+    $subtotal = $items->sum(function($item) {
+        return $item->product->price * $item->quantity;
+    });
+
+    $uniqueStores = $items->pluck('product.store')->unique('id')->filter();
+    $delivery_fee = $uniqueStores->sum(function($store) {
+        return $store->delivery_price;
+    });
+
+    $userOrderCount = UserOrderCount::firstOrCreate(['user_id' => Auth::id()]);
+    $discount = 0.05 * $userOrderCount->order_count * $subtotal;
+    $discount = min($discount, $subtotal * 0.2);
+
+    // إعادة التحقق من الكوبون في الخادم
+    $hadCoupon = session()->has('coupon_code');
+    [$coupon, $couponDiscount] = $this->resolveCoupon($subtotal, $discount);
+
+    if ($hadCoupon && !$coupon) {
+        return redirect()->route('cart.index')
+            ->with('error', 'كود الخصم لم يعد صالحاً وتم إلغاؤه. راجعي الإجمالي ثم أعيدي المحاولة.');
+    }
+
+    $total = $subtotal + $delivery_fee - $discount - $couponDiscount;
+
+    // ===== الحفظ =====
+    DB::transaction(function() use ($items, $cart, $request, $subtotal, $delivery_fee,
+                                     $discount, $coupon, $couponDiscount, $total, $userOrderCount) {
+
+        $order = Order::create([
+            'user_id'         => Auth::id(),
+            'subtotal'        => $subtotal,
+            'delivery_price'  => $delivery_fee,
+            'discount'        => $discount,
+            'coupon_code'     => $coupon?->code,
+            'coupon_discount' => $couponDiscount,
+            'total'           => $total,
+            'address'         => $request->address,
+            'latitude'        => $request->latitude,
+            'longitude'       => $request->longitude,
         ]);
 
-        $cart = Cart::where('user_id', Auth::id())->firstOrFail();
-        $items = $cart->items()->with('product.store')->get();
-
-        if ($items->isEmpty()) {
-            return redirect()->back()->with('error', 'السلة فارغة.');
+        foreach ($items as $item) {
+            OrderItem::create([
+                'order_id'   => $order->id,
+                'product_id' => $item->product_id,
+                'quantity'   => $item->quantity,
+                'price'      => $item->product->price,
+            ]);
         }
 
-        DB::transaction(function() use ($items, $cart, $request) {
-            $subtotal = $items->sum(function($item) {
-                return $item->product->price * $item->quantity;
-            });
+        $userOrderCount->order_count += 1;
+        $userOrderCount->save();
 
-            // Calculate delivery fee as sum of unique store delivery prices
-            $uniqueStores = $items->pluck('product.store')->unique('id')->filter();
-            $delivery_fee = $uniqueStores->sum(function($store) {
-                return $store->delivery_price;
-            });
+        if ($coupon) {
+            $coupon->increment('used_count');
+        }
 
-            // Calculate discount based on order count
-            $userOrderCount = UserOrderCount::firstOrCreate(['user_id' => Auth::id()]);
-            $discount = 0.05 * $userOrderCount->order_count * $subtotal;
-            $discount = min($discount, $subtotal * 0.2);
+        $cart->items()->delete();
 
-            $total = $subtotal + $delivery_fee - $discount;
+        $admin = User::where('role', 'admin')->first();
+        if ($admin) {
+            $admin->notify(new NewOrderNotification($order));
+        }
+    });
 
-            $order = Order::create([
-                'user_id' => Auth::id(),
-                'subtotal' => $subtotal,
-                'delivery_price' => $delivery_fee,
-                'discount' => $discount,
-                'total' => $total,
-                'address' => $request->address,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
-            ]);
+    session()->forget(['cart_count', 'coupon_code']);
 
-            foreach ($items as $item) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->product_id,
-                    'quantity' => $item->quantity,
-                    'price' => $item->product->price,
-                ]);
-            }
-
-            $userOrderCount->order_count += 1;
-            $userOrderCount->save();
-
-            $cart->items()->delete();
-
-            $admin = User::where('role', 'admin')->first();
-            if ($admin) {
-                $admin->notify(new NewOrderNotification($order));
-            }
-        });
-
-        // Clear cart count from session
-        session()->forget('cart_count');
-
-        return redirect()->route('cart.index')->with('success', 'تم تأكيد وإرسال طلبك بنجاح. يمكنك استعراض طلبك ومراقبة حالته.');
-    }
+    return redirect()->route('cart.index')->with('success', 'تم تأكيد وإرسال طلبك بنجاح. يمكنك استعراض طلبك ومراقبة حالته.');
+}
 }

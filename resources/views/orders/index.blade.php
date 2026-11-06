@@ -38,6 +38,9 @@
                     <p><strong>المجموع الجزئي:</strong> ل.س{{ $order->subtotal }}</p>
                     <p><strong>رسوم التوصيل:</strong> ل.س{{ $order->delivery_price }}</p>
                     <p><strong>الخصم:</strong> ل.س{{ $order->discount }}</p>
+                    @if($order->coupon_code)
+    <p><strong>كود الخصم:</strong> {{ $order->coupon_code }} (- ل.س{{ $order->coupon_discount }})</p>
+@endif
                     <p><strong>الإجمالي:</strong> <span class="fw-bold" style="color: var(--clr-primary);">ل.س{{ $order->total }}</span></p>
 
                     <p><strong>المنتجات:</strong></p>
